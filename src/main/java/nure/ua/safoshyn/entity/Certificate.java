@@ -15,8 +15,8 @@ import java.time.LocalDate;
 public class Certificate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotBlank(message = "Name cannot be blank")
     @NonNull
@@ -28,12 +28,22 @@ public class Certificate {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @NotBlank(message = "number_of_successful_lessons_to_get cannot be blank")
+    @NonNull
+    @Column(name = "number_of_successful_lessons_to_get", nullable = false)
+    private int numberOfSuccessfulLessonsToGet;
+
+    @NotBlank(message = "isCompleted field cannot be blank")
+    @NonNull
+    @Column(name = "isCompleted", nullable = false)
+    private Boolean isCompleted = false;
+
     @ManyToOne
     @JoinColumn(name = "custom_user_id", referencedColumnName = "id", nullable = true)
     private CustomUser customUser;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
+    @JoinColumn(name = "instructor_id", referencedColumnName = "id", nullable = true)
     private CustomUser instructor;
 
 }
