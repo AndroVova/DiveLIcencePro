@@ -49,7 +49,7 @@ public class CustomUserServiceImpl implements CustomUserService {
     }
 
 
-    private CustomUser unwrapCustomUser(Optional<CustomUser> entity, Long id) {
+    public static CustomUser unwrapCustomUser(Optional<CustomUser> entity, Long id) {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, CustomUser.class);
     }
