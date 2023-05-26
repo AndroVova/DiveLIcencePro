@@ -58,12 +58,12 @@ public class CustomUser {
     private Profile profile;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "instructor", cascade = CascadeType.ALL)
-    private Certificate certificate_instructor;
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
+    private List<Certificate> certificate_instructor;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "instructor", cascade = CascadeType.ALL)
-    private Lesson lesson_instructor;
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
+    private List<Lesson> lesson_instructor;
 }
 /*
 * id +

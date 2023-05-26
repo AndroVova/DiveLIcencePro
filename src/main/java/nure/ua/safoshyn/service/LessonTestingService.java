@@ -13,6 +13,7 @@ public interface LessonTestingService {
     List<LessonTesting> getLessonTestings();
     List<LessonTesting> getLessonTestingsByLesson(Long id);
     List<LessonTesting> getLessonTestingsByUser(Long id);
+    List<LessonTesting> getLessonTestingsBySensor(String id);
     Long countLessonTestingsWithIndicatesAboveNorm(/*, String id*/);
     //Long countAlcoTestingsWithValueGreaterThanMaxValue(EntityManager entityManager/*, String id*/);
     //List<AlcoTesting> findAlcoTestingsWithValueGreaterThanMaxValue(EntityManager entityManager);

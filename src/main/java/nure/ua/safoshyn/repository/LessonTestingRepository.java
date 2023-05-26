@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LessonTestingRepository extends CrudRepository<LessonTesting, Long> {
     List<LessonTesting> findAllByLessonId(Long id);
+    List<LessonTesting> findAllBySensorId(String id);
 }

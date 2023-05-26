@@ -18,22 +18,18 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @NotBlank(message = "Name cannot be blank")
     @NonNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank(message = "Name cannot be blank")
     @NonNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @NotBlank(message = "number_of_successful_lessons_to_get cannot be blank")
     @NonNull
     @Column(name = "number_of_successful_lessons_to_get", nullable = false)
     private int numberOfSuccessfulLessonsToGet;
 
-    @NotBlank(message = "maxDepth cannot be blank")
     @NonNull
     @Column(name = "max_depth")
     private int maxDepth;
@@ -46,7 +42,7 @@ public class Certificate {
     @JoinColumn(name = "custom_user_id", referencedColumnName = "id", nullable = true)
     private CustomUser customUser;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "instructor_id", referencedColumnName = "id", nullable = true)
     private CustomUser instructor;
 

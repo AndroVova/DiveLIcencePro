@@ -69,12 +69,17 @@ public class LessonTestingServiceImpl implements LessonTestingService {
 
     @Override
     public List<LessonTesting> getLessonTestingsByUser(Long id) {
-        List<CustomUser> userList = lessonRepository.findAllByCustomUserId(id);
+        List<Lesson> lessonsList = lessonRepository.findAllByCustomUserId(id);
         List<LessonTesting> lessonTestings = new ArrayList<>();
-        for (CustomUser cu : userList) {
-            lessonTestings.addAll(lessonTestingRepository.findAllByLessonId(cu.getId()));
+        for (Lesson l : lessonsList) {
+            lessonTestings.addAll(lessonTestingRepository.findAllByLessonId(l.getId()));
         }
         return lessonTestings;
+    }
+
+    @Override
+    public List<LessonTesting> getLessonTestingsBySensor(String id) {
+        return lessonTestingRepository.findAllBySensorId(id);
     }
 
     //TODO: LOGIC

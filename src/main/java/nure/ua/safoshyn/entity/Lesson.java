@@ -19,15 +19,13 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank")
     @NonNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank(message = "Task cannot be blank")
     @NonNull
     @Column(name = "task", nullable = false)
-    private String Task;
+    private String task;
 
     @NonNull
     @Column(name = "date", nullable = false)
@@ -49,8 +47,8 @@ public class Lesson {
     @JoinColumn(name = "custom_user_id", referencedColumnName = "id", nullable = true)
     private CustomUser customUser;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "lesson_instructor_id", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "lesson_instructor_id", referencedColumnName = "id", nullable = true)
     private CustomUser instructor;
 
 }
