@@ -17,14 +17,22 @@ public class LessonTesting {
     private Long id;
 
     @NotNull
-    @Column(name = "value", nullable = false)
-    private double value;
+    @Column(name = "heart_rate_value", nullable = false)
+    private double heartRateValue;
+
+    @NotNull
+    @Column(name = "depth", nullable = false)
+    private double depth;
+
+    @NotNull
+    @Column(name = "time", nullable = false)
+    private Long time;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "lesson_id", referencedColumnName = "id")
+    @JoinColumn(name = "lesson_id", referencedColumnName = "id", nullable = true)
     private Lesson lesson;
 
     @ManyToOne
-    @JoinColumn(name = "sensor_id", referencedColumnName = "id")
+    @JoinColumn(name = "sensor_id", referencedColumnName = "id", nullable = true)
     private Sensor sensor;
 }

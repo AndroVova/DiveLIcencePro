@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class EmailUtil {
@@ -61,9 +62,9 @@ public class EmailUtil {
 
     private static String getEmailBody(LessonTesting test) {
         LocalDate date = test.getLesson().getDate();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
-        return "An AlcoTesting failure has occurred for employee " + test.getLesson().getCustomUser().getName() +
+        return "An Testing failure has occurred for user " + test.getLesson().getCustomUser().getName() +
                 " with ID " + test.getLesson().getCustomUser().getId() +
                 " on " + strDate;
     }

@@ -25,8 +25,16 @@ public class Sensor {
     private String name;
 
     @NotNull
-    @Column(nullable = false)
-    private double studentPulse;
+    @Column(name = "max_heart_rate_value", nullable = false)
+    private double maxHeartRateValue;
+
+    @NotNull
+    @Column(name = "max_depth", nullable = false)
+    private double maxDepth;
+
+    @NotNull
+    @Column(name = "max_time", nullable = false)
+    private Long maxTime;
 
     @JsonIgnore
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL)

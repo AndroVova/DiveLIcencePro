@@ -24,15 +24,22 @@ public class Lesson {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank(message = "Date cannot be blank")
+    @NotBlank(message = "Task cannot be blank")
+    @NonNull
+    @Column(name = "task", nullable = false)
+    private String Task;
+
     @NonNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @NotBlank(message = "Duration of the lesson cannot be blank")
     @NonNull
     @Column(name = "duration", nullable = false)
     private int duration;
+
+    @NonNull
+    @Column(name = "is_successful")
+    private Boolean isSuccessful = false;
 
     @JsonIgnore
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)

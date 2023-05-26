@@ -33,9 +33,13 @@ public class Certificate {
     @Column(name = "number_of_successful_lessons_to_get", nullable = false)
     private int numberOfSuccessfulLessonsToGet;
 
-    @NotBlank(message = "isCompleted field cannot be blank")
+    @NotBlank(message = "maxDepth cannot be blank")
     @NonNull
-    @Column(name = "isCompleted", nullable = false)
+    @Column(name = "max_depth")
+    private int maxDepth;
+
+    @NonNull
+    @Column(name = "is_completed")
     private Boolean isCompleted = false;
 
     @ManyToOne
