@@ -7,7 +7,7 @@ import java.util.List;
 public interface CertificateService {
     Certificate getCertificate(String id);
     Certificate saveCertificate(Certificate certificate);
-    Certificate addCertificateToUser(Certificate certificate, Long userId, Long instructorId );
+    Certificate addCertificateToUser(String id,Long userId, Long instructorId );
     void deleteCertificate(String id);
     List<Certificate> getCertificatesByUser(Long userId);
     List<Certificate> getCertificatesByInstructor(Long instructorId);

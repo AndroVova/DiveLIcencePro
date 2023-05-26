@@ -27,6 +27,7 @@ public class DiveClubController {
 
 
     DiveClubService diveClubService;
+    //TODO:RENAME
 
     @GetMapping("/{id}")
     public ResponseEntity<DiveClub> getDepartment(@PathVariable Long id) {

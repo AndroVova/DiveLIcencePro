@@ -30,12 +30,14 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Certificate addCertificateToUser(Certificate certificate, Long userId, Long instructorId) {
+    public Certificate addCertificateToUser(String id, Long userId, Long instructorId) {
 
+        Optional<Certificate> cert = certificateRepository.findById(id);
         Optional<CustomUser> user = customUserRepository.findById(userId);
         Optional<CustomUser> instructor = customUserRepository.findById(instructorId);
         CustomUser unwrappedUser = CustomUserServiceImpl.unwrapCustomUser(user, userId);
         CustomUser unwrappedInstructor = CustomUserServiceImpl.unwrapCustomUser(instructor, instructorId);
+        Certificate certificate = unwrapCertificate(cert, id);
         certificate.setCustomUser(unwrappedUser);
         certificate.setInstructor(unwrappedInstructor);
         return certificateRepository.save(certificate);

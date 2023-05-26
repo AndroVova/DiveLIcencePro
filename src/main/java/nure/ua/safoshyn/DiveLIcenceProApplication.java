@@ -1,7 +1,10 @@
 package nure.ua.safoshyn;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class DiveLIcenceProApplication {
@@ -10,4 +13,8 @@ public class DiveLIcenceProApplication {
         SpringApplication.run(DiveLIcenceProApplication.class, args);
     }
 
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
