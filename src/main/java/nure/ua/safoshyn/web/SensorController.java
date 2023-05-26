@@ -6,6 +6,7 @@ import nure.ua.safoshyn.entity.Sensor;
 import nure.ua.safoshyn.service.SensorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class SensorController {
         return new ResponseEntity<>(sensor, HttpStatus.CREATED);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Sensor> deleteSensor(@PathVariable String id) {
         sensorService.deleteSensor(id);

@@ -6,14 +6,11 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class EmailUtil {
-    public static void sendMessage(LessonTesting test) throws MessagingException {
+
+    public static void sendMessage(LessonTesting test, CustomMessage text) throws MessagingException {
 
         System.out.println("Preparing for sending an email...");
         String to = test.getLesson().getCustomUser().getProfile().getEmail();
@@ -41,18 +38,18 @@ public class EmailUtil {
             }
         });
 
-        Message message = prepareMessage(test, to, email, session);
+        Message message = prepareMessage(to, email, session, text);
         Transport.send(message);
         System.out.println("Email sent successfully");
     }
 
-    private static Message prepareMessage(LessonTesting test, String to, String email, Session session) {
+    private static Message prepareMessage(String to, String email, Session session, CustomMessage text) {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(email));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject("Exceeding the limit of alcohol intoxication");//TODO: new massage
-            message.setText(getEmailBody(test));
+            message.setSubject(text.getTitle());
+            message.setText(text.getMainText());
 
             return message;
         } catch (MessagingException e) {
@@ -60,12 +57,25 @@ public class EmailUtil {
         }
     }
 
-    private static String getEmailBody(LessonTesting test) {
+    /*private static String getFailureTestEmailBody(LessonTesting test) {
         LocalDate date = test.getLesson().getDate();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
         return "An Testing failure has occurred for user " + test.getLesson().getCustomUser().getName() +
                 " with ID " + test.getLesson().getCustomUser().getId() +
-                " on " + strDate;
+                " on " + strDate + "\n";
     }
+
+    private static String getSuccessfulEmailBody(LessonTesting test) {
+        LocalDate date = test.getLesson().getDate();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+
+        Certificate cert = test.getLesson().getCustomUser().getCertificates();
+        return "An Testing failure has occurred for user " + test.getLesson().getCustomUser().getName() +
+                " with ID " + test.getLesson().getCustomUser().getId() +
+                " on " + strDate + "\n";
+
+
+    }*/
 }

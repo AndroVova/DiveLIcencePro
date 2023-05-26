@@ -19,7 +19,6 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @NotBlank(message = "Name cannot be blank")
     @NonNull
     @Column(nullable = false)
     private String name;

@@ -17,7 +17,6 @@ public class Certificate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     @NonNull
     @Column(name = "name", nullable = false)
     private String name;

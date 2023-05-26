@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nure.ua.safoshyn.entity.Profile;
 import nure.ua.safoshyn.exception.EntityNotFoundException;
 import nure.ua.safoshyn.repository.ProfileRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProfileServiceImpl implements ProfileService{
     private ProfileRepository profileRepository;
-    //ToDo:private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Profile getProfile(Long id) {
@@ -34,7 +35,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public Profile saveProfile(Profile profile) {
-        //ToDo:profile.setPassword(bCryptPasswordEncoder.encode(profile.getPassword()));
+        profile.setPassword(bCryptPasswordEncoder.encode(profile.getPassword()));
         return profileRepository.save(profile);
     }
 

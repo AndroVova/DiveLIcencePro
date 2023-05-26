@@ -3,19 +3,17 @@ package nure.ua.safoshyn.service;
 import lombok.AllArgsConstructor;
 import nure.ua.safoshyn.SuccessCriteria;
 import nure.ua.safoshyn.emailUtil.EmailUtil;
-import nure.ua.safoshyn.entity.CustomUser;
-import nure.ua.safoshyn.entity.Lesson;
-import nure.ua.safoshyn.entity.LessonTesting;
-import nure.ua.safoshyn.entity.Sensor;
+import nure.ua.safoshyn.emailUtil.CustomMessage;
+import nure.ua.safoshyn.entity.*;
+import nure.ua.safoshyn.exception.CertificateIsReadyException;
 import nure.ua.safoshyn.exception.EntityNotFoundException;
 import nure.ua.safoshyn.exception.LessonTestingFailureException;
-import nure.ua.safoshyn.repository.CustomUserRepository;
-import nure.ua.safoshyn.repository.LessonRepository;
-import nure.ua.safoshyn.repository.LessonTestingRepository;
-import nure.ua.safoshyn.repository.SensorRepository;
+import nure.ua.safoshyn.repository.*;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +26,10 @@ public class LessonTestingServiceImpl implements LessonTestingService {
     SensorRepository sensorRepository;
     LessonRepository lessonRepository;
     CustomUserRepository customUserRepository;
+    CertificateRepository certificateRepository;
+
+    LessonService lessonService;
+    CertificateService certificateService;
 
     @Override
     public LessonTesting getLessonTesting(Long id) {
@@ -84,7 +86,7 @@ public class LessonTestingServiceImpl implements LessonTestingService {
 
     //TODO: LOGIC
     @Override
-    public Long countLessonTestingsWithIndicatesAboveNorm() {
+    public Long countLessonTestingsWithIndicatesAboveNorm(Long id) {
         return null;
     }
 
@@ -92,27 +94,66 @@ public class LessonTestingServiceImpl implements LessonTestingService {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, LessonTesting.class);
     }
-    private static void checkIfLessonWasSuccessful(LessonTesting test, Long lessonId, Sensor sensor, Lesson lesson) throws MessagingException {
+
+    private void checkIfLessonWasSuccessful(LessonTesting test, Long lessonId, Sensor sensor, Lesson lesson) throws MessagingException {
         double heartRate = test.getHeartRateValue();
         Long time = test.getTime();
 
         double maxHeartRate = sensor.getMaxHeartRateValue();
         Long maxTime = sensor.getMaxTime();
-
-        try{
+        Certificate certificate = new Certificate();
+        try {
             if (SuccessCriteria.isTimeCriteriaIsValid(maxTime, time) &&
                     SuccessCriteria.isHeartRateCriteriaIsValid(maxHeartRate, heartRate)) {
                 lesson.setIsSuccessful(true);
+                Long numberOfsuccessfulLessons = lessonService.countSuccessfulLessonsByUser(lesson.getCustomUser().getId());
+                List<Certificate> certificates = certificateService.getCertificatesByUser(lesson.getCustomUser().getId());
+                for (Certificate cert : certificates) {
+                    if (!cert.getIsCompleted()) {
+                        if (numberOfsuccessfulLessons >= cert.getNumberOfSuccessfulLessonsToGet()) {
+                            certificate = cert;
+                            cert.setIsCompleted(true);
+                            certificateRepository.save(cert);
+                            test.setLesson(lesson);
+                            throw new CertificateIsReadyException(cert.getId(), cert);
+                        }
+                        break;
+                    }
+                }
+
                 test.setLesson(lesson);
-            } else{
+            } else {
                 lesson.setIsSuccessful(false);
                 test.setLesson(lesson);
                 throw new LessonTestingFailureException(lessonId, lesson);
             }
-        } catch (LessonTestingFailureException e){
-            //ToDo:Message?
-            EmailUtil.sendMessage(test);
+        } catch (LessonTestingFailureException e) {
+            CustomMessage customMessage = createTestFailureMessage(test, lesson);
+            EmailUtil.sendMessage(test, customMessage);
+        } catch (CertificateIsReadyException e) {
+            CustomMessage customMessage = createSuccessMessage(test, lesson, certificate);
+            EmailUtil.sendMessage(test, customMessage);
         }
+    }
+
+    private CustomMessage createSuccessMessage(LessonTesting test, Lesson lesson, Certificate certificate) {
+        LocalDate date = lesson.getDate();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        String title = "Congratulations, you got your certificate";
+        String body = "The certificate " + certificate.getName() + " with id: '" + certificate.getId() +
+                "' is obtained, by user " + test.getLesson().getCustomUser().getName() + "!";
+        return new CustomMessage(title, body);
+    }
+
+    private CustomMessage createTestFailureMessage(LessonTesting test, Lesson lesson) {
+        LocalDate date = lesson.getDate();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        String title = "Was found an problem through your dive";
+        String body = "An Testing failure has occurred for user " + lesson.getCustomUser().getName() +
+                " with ID " + lesson.getCustomUser().getId() + " on " + strDate + "\n";
+        return new CustomMessage(title, body);
     }
 
 }

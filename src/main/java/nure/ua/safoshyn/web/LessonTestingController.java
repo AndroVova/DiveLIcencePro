@@ -46,4 +46,8 @@ public class LessonTestingController {
     public ResponseEntity<List<LessonTesting>> getAlcoTestingsByUser(@PathVariable Long id) {
         return new ResponseEntity<>(lessonTestingService.getLessonTestingsByUser(id), HttpStatus.OK);
     }
+    @GetMapping("/all/sensor/{id}")
+    public ResponseEntity<List<LessonTesting>> getAlcoTestingsBySensor(@PathVariable String id) {
+        return new ResponseEntity<>(lessonTestingService.getLessonTestingsBySensor(id), HttpStatus.OK);
+    }
 }
