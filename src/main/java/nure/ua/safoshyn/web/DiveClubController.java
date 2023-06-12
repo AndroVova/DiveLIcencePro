@@ -18,14 +18,6 @@ import java.util.List;
 @RequestMapping("/dive_club")
 public class DiveClubController {
 
-    /*DiveClub getDiveClub(Long id);
-    DiveClub saveDiveClub(DiveClub diveClub);
-    void deleteDiveClub(Long id);
-    List<DiveClub> getDiveClubs();
-    List<CustomUser> getUsersInDiveClub(Long id);
-    List<Certificate> getCertificatesGivenByDiveClub(Long id);*/
-
-
     DiveClubService diveClubService;
     //TODO:RENAME
 
@@ -33,25 +25,25 @@ public class DiveClubController {
     public ResponseEntity<DiveClub> getDepartment(@PathVariable Long id) {
         return new ResponseEntity<>(diveClubService.getDiveClub(id), HttpStatus.OK);
     }
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<DiveClub> saveDepartment(@Valid @RequestBody DiveClub department) {
         return new ResponseEntity<>(diveClubService.saveDiveClub(department), HttpStatus.CREATED);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<HttpStatus> deleteDepartment(@PathVariable Long id) {
         diveClubService.deleteDiveClub(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<DiveClub>> getDepartments() {
         return new ResponseEntity<>(diveClubService.getDiveClubs(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/users")
+    @GetMapping("/admin/{id}/users")
     public ResponseEntity<List<CustomUser>> getEnrolledEmployees(@PathVariable Long id) {
         return new ResponseEntity<>(diveClubService.getUsersInDiveClub(id), HttpStatus.OK);
     }
-    @GetMapping("/{id}/certificates")
+    @GetMapping("/admin/{id}/certificates")
     public ResponseEntity<List<Certificate>> getCertificatesGivenByDiveClub(@PathVariable Long id) {
         return new ResponseEntity<>(diveClubService.getCertificatesGivenByDiveClub(id), HttpStatus.OK);
     }

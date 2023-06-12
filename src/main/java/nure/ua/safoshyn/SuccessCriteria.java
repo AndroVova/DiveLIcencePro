@@ -1,6 +1,11 @@
 package nure.ua.safoshyn;
 
 public class SuccessCriteria {
+
+
+    public static boolean isASuccessfulLesson(double heartRate, Long time, double maxHeartRate, Long maxTime) {
+        return isTimeCriteriaIsValid(maxTime, time) && isHeartRateCriteriaIsValid(maxHeartRate, heartRate);
+    }
     public static boolean isHeartRateCriteriaIsValid(double maxHeartRate, double heartRate){
         return checkRange(maxHeartRate, heartRate);
     }

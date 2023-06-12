@@ -1,7 +1,6 @@
 package nure.ua.safoshyn.service;
 
 import lombok.AllArgsConstructor;
-import nure.ua.safoshyn.SuccessCriteria;
 import nure.ua.safoshyn.emailUtil.EmailUtil;
 import nure.ua.safoshyn.emailUtil.CustomMessage;
 import nure.ua.safoshyn.entity.*;
@@ -45,12 +44,34 @@ public class LessonTestingServiceImpl implements LessonTestingService {
         Lesson unwrappedLesson = LessonServiceImpl.unwrapLesson(lesson, lessonId);
 
         test.setSensor(unwrappedSensor);
-        checkIfLessonWasSuccessful(test, lessonId, unwrappedSensor, unwrappedLesson);
-
         test.setLesson(unwrappedLesson);
+        checkIfLessonWasSuccessful(test, lessonId, unwrappedLesson);
+
+
         lessonRepository.save(unwrappedLesson);
 
         return lessonTestingRepository.save(test);
+    }
+
+    private void checkIfLessonWasSuccessful(LessonTesting test, Long lessonId, Lesson lesson) throws MessagingException {
+        Certificate certificate = new Certificate();
+        try {
+            if (lesson.getIsSuccessful()){
+                certificate = obtainCertificateIfItIsReady(lesson, test);
+                if(certificate != null){
+                    throw new CertificateIsReadyException(certificate.getId(),certificate);
+                }
+
+            } else {
+                throw new LessonTestingFailureException(lessonId, lesson);
+            }
+        } catch (LessonTestingFailureException e) {
+            CustomMessage customMessage = createTestFailureMessage(test, lesson);
+            EmailUtil.sendMessage(test, customMessage);
+        } catch (CertificateIsReadyException e) {
+            CustomMessage customMessage = createSuccessMessage(test, lesson, certificate);
+            EmailUtil.sendMessage(test, customMessage);
+        }
     }
 
 
@@ -95,45 +116,22 @@ public class LessonTestingServiceImpl implements LessonTestingService {
         else throw new EntityNotFoundException(id, LessonTesting.class);
     }
 
-    private void checkIfLessonWasSuccessful(LessonTesting test, Long lessonId, Sensor sensor, Lesson lesson) throws MessagingException {
-        double heartRate = test.getHeartRateValue();
-        Long time = test.getTime();
 
-        double maxHeartRate = sensor.getMaxHeartRateValue();
-        Long maxTime = sensor.getMaxTime();
-        Certificate certificate = new Certificate();
-        try {
-            if (SuccessCriteria.isTimeCriteriaIsValid(maxTime, time) &&
-                    SuccessCriteria.isHeartRateCriteriaIsValid(maxHeartRate, heartRate)) {
-                lesson.setIsSuccessful(true);
-                Long numberOfsuccessfulLessons = lessonService.countSuccessfulLessonsByUser(lesson.getCustomUser().getId());
-                List<Certificate> certificates = certificateService.getCertificatesByUser(lesson.getCustomUser().getId());
-                for (Certificate cert : certificates) {
-                    if (!cert.getIsCompleted()) {
-                        if (numberOfsuccessfulLessons >= cert.getNumberOfSuccessfulLessonsToGet()) {
-                            certificate = cert;
-                            cert.setIsCompleted(true);
-                            certificateRepository.save(cert);
-                            test.setLesson(lesson);
-                            throw new CertificateIsReadyException(cert.getId(), cert);
-                        }
-                        break;
-                    }
+
+    private Certificate obtainCertificateIfItIsReady(Lesson lesson, LessonTesting test){
+        Long numberOfSuccessfulLessons = lessonService.countSuccessfulLessonsByUser(lesson.getCustomUser().getId());
+        List<Certificate> certificates = certificateService.getCertificatesByUser(lesson.getCustomUser().getId());
+        for (Certificate cert : certificates) {
+            if (!cert.getIsCompleted()) {
+                if (numberOfSuccessfulLessons >= cert.getNumberOfSuccessfulLessonsToGet()) {
+                    cert.setIsCompleted(true);
+                    certificateRepository.save(cert);
+                    test.setLesson(lesson);
+                    return cert;
                 }
-
-                test.setLesson(lesson);
-            } else {
-                lesson.setIsSuccessful(false);
-                test.setLesson(lesson);
-                throw new LessonTestingFailureException(lessonId, lesson);
             }
-        } catch (LessonTestingFailureException e) {
-            CustomMessage customMessage = createTestFailureMessage(test, lesson);
-            EmailUtil.sendMessage(test, customMessage);
-        } catch (CertificateIsReadyException e) {
-            CustomMessage customMessage = createSuccessMessage(test, lesson, certificate);
-            EmailUtil.sendMessage(test, customMessage);
         }
+        return null;
     }
 
     private CustomMessage createSuccessMessage(LessonTesting test, Lesson lesson, Certificate certificate) {
@@ -142,7 +140,7 @@ public class LessonTestingServiceImpl implements LessonTestingService {
         String strDate = dateFormat.format(date);
         String title = "Congratulations, you got your certificate";
         String body = "The certificate " + certificate.getName() + " with id: '" + certificate.getId() +
-                "' is obtained, by user " + test.getLesson().getCustomUser().getName() + "!";
+                "' is obtained on " + strDate + ", by user " + test.getLesson().getCustomUser().getName() + "!";
         return new CustomMessage(title, body);
     }
 

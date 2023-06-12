@@ -27,13 +27,13 @@ public class LessonTestingController {
         var lt = lessonTestingService.saveLessonTesting(test, sensor_id, lesson_id);
         return new ResponseEntity<>(lt, HttpStatus.CREATED);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<LessonTesting> deleteLessonTesting(@PathVariable Long id) {
         lessonTestingService.deleteLessonTesting(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<LessonTesting>> getLessonTestings() {
         return new ResponseEntity<>(lessonTestingService.getLessonTestings(), HttpStatus.OK);
     }

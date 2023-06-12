@@ -48,6 +48,15 @@ public class CustomUserServiceImpl implements CustomUserService {
         return (List<CustomUser>)customUserRepository.findAll();
     }
 
+    @Override
+    public CustomUser updateCustomUser(CustomUser customUser, Long id) {
+        Optional<CustomUser> user = customUserRepository.findById(id);
+        CustomUser unwrappedCustomUser = unwrapCustomUser(user, id);
+        customUser.setId(unwrappedCustomUser.getId());
+        customUser.setDiveClub(unwrappedCustomUser.getDiveClub());
+        return customUserRepository.save(customUser);
+    }
+
 
     public static CustomUser unwrapCustomUser(Optional<CustomUser> entity, Long id) {
         if (entity.isPresent()) return entity.get();

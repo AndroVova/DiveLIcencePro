@@ -31,6 +31,11 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public void deleteLesson(Long id) {
+        lessonRepository.deleteById(id);
+    }
+
+    @Override
     public Lesson addUserAndInstructorToLesson(Long id, Long userId, Long instructorId) {
         Optional<Lesson> l = lessonRepository.findById(id);
         Lesson lesson = unwrapLesson(l, id);
@@ -75,6 +80,15 @@ public class LessonServiceImpl implements LessonService {
                 .map(Lesson::getIsSuccessful)
                 .count();
     }
+
+    @Override
+    public Lesson updateLesson(Lesson lesson, Long id) {
+        Optional<Lesson> l = lessonRepository.findById(id);
+        Lesson unwrappedLesson = unwrapLesson(l, id);
+        lesson.setId(unwrappedLesson.getId());
+        return lessonRepository.save(lesson);
+    }
+
 
     static Lesson unwrapLesson(Optional<Lesson> entity, Long id) {
         if (entity.isPresent()) return entity.get();

@@ -23,20 +23,20 @@ public class SensorController {
         return new ResponseEntity<>(sensorService.getSensor(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<Sensor> saveSensor(@Valid @RequestBody Sensor sensor) {
         sensorService.saveSensor(sensor);
         return new ResponseEntity<>(sensor, HttpStatus.CREATED);
     }
 
     @Transactional
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Sensor> deleteSensor(@PathVariable String id) {
         sensorService.deleteSensor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<Sensor>> getSensor() {
         return new ResponseEntity<>(sensorService.getSensors(), HttpStatus.OK);
     }

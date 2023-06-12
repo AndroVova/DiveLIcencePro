@@ -10,4 +10,5 @@ public interface CustomUserService {
     CustomUser addCustomUserToNewDiveClub(Long customUserId, Long diveClubId);
     void deleteCustomUser(Long id);
     List<CustomUser> getCustomUsers();
+    CustomUser updateCustomUser(CustomUser customUser, Long id);
 }

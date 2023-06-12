@@ -7,4 +7,5 @@ public interface ProfileService {
     Profile getProfile(String username);
     Profile updateProfile(Long id);
     Profile saveProfile(Profile user);
+    Profile saveAdminProfile(Profile user);
 }

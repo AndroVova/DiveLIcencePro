@@ -1,7 +1,9 @@
 package nure.ua.safoshyn;
 
+import nure.ua.safoshyn.exception.CertificateIsReadyException;
 import nure.ua.safoshyn.exception.EntityNotFoundException;
 import nure.ua.safoshyn.exception.ErrorResponse;
+import nure.ua.safoshyn.exception.LessonTestingFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +23,7 @@ import java.util.List;
 @ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class/*, AlcoTestingFailureException.class*/})
+    @ExceptionHandler({EntityNotFoundException.class, LessonTestingFailureException.class, CertificateIsReadyException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
         ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);

@@ -28,20 +28,24 @@ public class CustomUserController {
         return new ResponseEntity<>(customUser, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<CustomUser> deleteCustomUser(@PathVariable Long id) {
         customUserService.deleteCustomUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<CustomUser>> getCustomUsers(){
         return new ResponseEntity<>(customUserService.getCustomUsers(), HttpStatus.OK);
     }
 
-    @PutMapping("/{customUserId}/dive_club/{diveClubId}")
+    @PutMapping("/admin/{customUserId}/dive_club/{diveClubId}")
     public ResponseEntity<CustomUser> updateDiveClubToCustomUser(@PathVariable Long diveClubId, @PathVariable Long customUserId) {
         return new ResponseEntity<>(customUserService.addCustomUserToNewDiveClub(customUserId, diveClubId), HttpStatus.OK);
+    }
+    @PutMapping("/{customUserId}")
+    public ResponseEntity<CustomUser> updateCustomUser(@RequestBody CustomUser customUser, @PathVariable Long customUserId) {
+        return new ResponseEntity<>(customUserService.updateCustomUser(customUser, customUserId), HttpStatus.OK);
     }
 
 }

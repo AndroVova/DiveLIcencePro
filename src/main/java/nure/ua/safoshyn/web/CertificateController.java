@@ -22,13 +22,13 @@ public class CertificateController {
         Certificate c = certificateService.getCertificate(id);
         return new ResponseEntity<>(c, HttpStatus.OK);
     }
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<Certificate> saveCertificate(@RequestBody Certificate certificate) {
         Certificate c = certificateService.saveCertificate(certificate);
         return new ResponseEntity<>(c, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/user/{customUserId}/instructor/{instructorId}")
+    @PutMapping("/admin/{id}/user/{customUserId}/instructor/{instructorId}")
     public ResponseEntity<Certificate> updateCertificateStatus(@PathVariable String id,
                                                               @PathVariable Long customUserId,
                                                               @PathVariable Long instructorId) {
@@ -37,7 +37,7 @@ public class CertificateController {
     }
 
     @Transactional
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Certificate> deleteSensor(@PathVariable String id) {
         certificateService.deleteCertificate(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,11 +48,11 @@ public class CertificateController {
         return new ResponseEntity<>(certificateService.getCertificatesByUser(id), HttpStatus.OK);
     }
 
-    @GetMapping("/instructor/{id}")
+    @GetMapping("/admin/instructor/{id}")
     public ResponseEntity<List<Certificate>> getCertificatesByInstructor(@PathVariable Long id){
         return new ResponseEntity<>(certificateService.getCertificatesByInstructor(id), HttpStatus.OK);
     }
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<List<Certificate>> getCertificates(){
         return new ResponseEntity<>(certificateService.getCertificates(), HttpStatus.OK);
     }

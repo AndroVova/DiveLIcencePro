@@ -7,9 +7,11 @@ import java.util.List;
 public interface LessonService {
     Lesson getLesson(Long id);
     Lesson addLesson(Lesson lesson);
+    void deleteLesson(Long id);
     Lesson addUserAndInstructorToLesson(Long id, Long userId, Long instructorId);
     List<Lesson> getLessons();
     List<Lesson> getLessonsByUser(Long id);
     List<Lesson> getLessonsByDiveClub(Long id);
     Long countSuccessfulLessonsByUser(Long userId);
+    Lesson updateLesson(Lesson lesson, Long id);
 }

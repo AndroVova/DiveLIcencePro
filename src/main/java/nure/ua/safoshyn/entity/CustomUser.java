@@ -31,11 +31,6 @@ public class CustomUser {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @NotBlank(message = "Role cannot be blank")
-    @NonNull
-    @Column(name = "role", nullable = false)
-    private String role;
-
     @NotBlank(message = "Place of residence cannot be blank")
     @NonNull
     @Column(name = "place_of_residence", nullable = false)
