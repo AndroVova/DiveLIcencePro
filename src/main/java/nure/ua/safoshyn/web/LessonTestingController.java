@@ -38,6 +38,7 @@ public class LessonTestingController {
         return new ResponseEntity<>(lessonTestingService.getLessonTestings(), HttpStatus.OK);
     }
 
+
     @GetMapping("/all/lesson/{id}")
     public ResponseEntity<List<LessonTesting>> getLessonTestingsByLesson(@PathVariable Long id) {
         return new ResponseEntity<>(lessonTestingService.getLessonTestingsByLesson(id), HttpStatus.OK);
